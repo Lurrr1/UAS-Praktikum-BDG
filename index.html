@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Atlet Visualisasi</title>
+    <link rel="stylesheet" href="../node_modules/popoto/dist/popoto.min.css">
+    <link rel="stylesheet" href="../shared.css">
+</head>
+<body class="ppt-body">
+<section class="ppt-section-main">
+    <div class="ppt-section-header">
+        <span class="ppt-header-span">Atlet</span> Graph
+    </div>
+    <div class="ppt-container-graph">
+        <nav id="popoto-taxonomy" class="ppt-taxo-nav"></nav>
+        <div id="popoto-graph" class="ppt-div-graph"></div>
+    </div>
+    <div id="popoto-cypher" class="ppt-container-cypher"></div>
+    <div class="ppt-section-header">
+        RESULTS <span id="result-total-count" class="ppt-count"></span>
+    </div>
+    <div id="popoto-results" class="ppt-container-results"></div>
+</section>
+
+<!-- Scripts -->
+<script src="../shared.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
+<script src="../node_modules/neo4j-driver-lite/lib/browser/neo4j-lite-web.min.js"></script>
+<script src="../node_modules/popoto/dist/popoto.min.js"></script>
+
+<script>
+    const driver = neo4j.driver(
+        "bolt://localhost:7687/",  // Ganti jika pakai Neo4j Aura
+        neo4j.auth.basic("neo4j", "12345678"),
+        { disableLosslessIntegers: true }
+    );
+    popoto.runner.DRIVER = driver;
+
+    popoto.query.COLLECT_RELATIONS_WITH_VALUES = true;
+
+    // Daftar node label dari graph kamu
+    popoto.graph.nodeTypes = [
+        { label: "Atlet" },
+        { label: "Negara" },
+        { label: "Cabang" },
+        { label: "Klub" },
+        { label: "Timnas" },
+        { label: "Posisi" },
+        { label: "Kompetisi" }
+    ];
+
+    // Konfigurasi atribut yang ditampilkan
+    popoto.provider.node.Provider = {
+        "Atlet": {
+            returnAttributes: ["nama", "id", "tahun_lahir", "prestasi_tertinggi"],
+            constraintAttribute: "nama",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Negara": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Cabang": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Klub": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Timnas": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Posisi": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        },
+        "Kompetisi": {
+            returnAttributes: ["name"],
+            constraintAttribute: "name",
+            "getDisplayType": function (node) {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            }
+        }
+    };
+
+    // Opsional: style taxonomy
+    popoto.provider.taxonomy.Provider = {
+        getCSSClass: function (label, element) {
+            return "ppt-taxo__" + element + " " + label;
+        }
+    };
+
+    // Update jumlah hasil
+    popoto.result.onTotalResultCount(function (count) {
+        document.getElementById("result-total-count").innerHTML = "(" + count + ")";
+    });
+
+    // Mulai dari node "Atlet"
+    driver.verifyConnectivity().then(function () {
+        popoto.start("Atlet");
+    }).catch(function (error) {
+        alert("Connection error: " + error);
+        console.error(error);
+    });
+</script>
+</body>
+</html>

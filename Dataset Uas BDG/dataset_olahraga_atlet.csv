@@ -1,0 +1,11 @@
+id_atlet,nama_atlet,negara,tahun_lahir,cabang_olahraga,klub,tim_nasional,posisi,kompetisi,prestasi_tertinggi
+A1,Lionel Messi,Argentina,1987,Sepak Bola,Paris Saint-Germain,Argentina,Penyerang,"La Liga, Ligue 1",Ballon d'Or
+A2,Serena Williams,USA,1981,Tenis,Pensiun,USA,Petenis Tunggal,"Wimbledon, US Open",Grand Slam
+A3,Michael Jordan,USA,1963,Basket,Chicago Bulls,USA,Shooting Guard,NBA,Hall of Fame
+A4,Usain Bolt,Jamaika,1986,Atletik,Tim Nasional Jamaika,Jamaika,Sprinter,Olimpiade,Rekor Dunia 100m
+A5,Cristiano Ronaldo,Portugal,1985,Sepak Bola,Al-Nassr,Portugal,Penyerang,"Serie A, Premier League",Ballon d'Or
+A6,Roger Federer,Swiss,1981,Tenis,Pensiun,Swiss,Petenis Tunggal,Wimbledon,Grand Slam
+A7,Simone Biles,USA,1997,Senam,Tim Nasional USA,USA,Pesenam,Olimpiade,Medali Emas
+A8,Lewis Hamilton,UK,1985,F1,Mercedes,UK,Pembalap,F1 World Championship,Juara Dunia
+A9,Novak Djokovic,Serbia,1987,Tenis,Aktif,Serbia,Petenis Tunggal,Australian Open,Grand Slam
+A10,Stephen Curry,USA,1988,Basket,Golden State Warriors,USA,Point Guard,NBA,3-Point King
