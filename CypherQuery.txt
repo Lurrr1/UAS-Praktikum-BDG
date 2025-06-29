@@ -1,0 +1,84 @@
+/// Membagi csv mentah menjadi beberapa bagian csv node ///
+import pandas as pd
+
+# Baca file utama
+df = pd.read_csv("dataset_olahraga_atlet.csv")
+
+# 1. Simpan atlet
+df[['AthleteID', 'Name', 'Medals']].drop_duplicates().to_csv("athletes.csv", index=False, header=['id','name','medals'])
+
+# 2. Simpan sport unik
+df[['Sport']].drop_duplicates().to_csv("sports.csv", index=False, header=['name'])
+
+# 3. Simpan team unik
+df[['Team']].drop_duplicates().to_csv("teams.csv", index=False, header=['name'])
+
+# 4. Simpan country unik
+df[['Country']].drop_duplicates().to_csv("countries.csv", index=False, header=['name'])
+
+# 5. Simpan relasi Athlete - Sport
+df[['AthleteID', 'Sport']].drop_duplicates().to_csv("athlete_sport.csv", index=False, header=['athlete_id', 'sport_name'])
+
+# 6. Simpan relasi Athlete - Team
+df[['AthleteID', 'Team']].drop_duplicates().to_csv("athlete_team.csv", index=False, header=['athlete_id', 'team_name'])
+
+# 7. Simpan relasi Athlete - Country
+df[['AthleteID', 'Country']].drop_duplicates().to_csv("athlete_country.csv", index=False, header=['athlete_id', 'country_name'])
+
+/// Membuat node dan relations di Neo4j ///
+
+1. Membuat Constraint
+CREATE CONSTRAINT athlete_id IF NOT EXISTS
+FOR (a:Athlete) REQUIRE a.id IS UNIQUE;
+
+CREATE CONSTRAINT sport_name IF NOT EXISTS
+FOR (s:Sport) REQUIRE s.name IS UNIQUE;
+
+CREATE CONSTRAINT team_name IF NOT EXISTS
+FOR (t:Team) REQUIRE t.name IS UNIQUE;
+
+CREATE CONSTRAINT country_name IF NOT EXISTS
+FOR (c:Country) REQUIRE c.name IS UNIQUE;
+
+2. Membuat Node
+LOAD CSV WITH HEADERS FROM 'file:///athletes.csv' AS row
+MERGE (a:Athlete {id: row.id})
+SET a.name = row.name, a.medals = toInteger(row.medals);
+
+LOAD CSV WITH HEADERS FROM 'file:///sports.csv' AS row
+MERGE (:Sport {name: row.name});
+
+LOAD CSV WITH HEADERS FROM 'file:///teams.csv' AS row
+MERGE (:Team {name: row.name});
+
+LOAD CSV WITH HEADERS FROM 'file:///countries.csv' AS row
+MERGE (:Country {name: row.name});
+
+3. Membuat relations
+// PLAYS
+LOAD CSV WITH HEADERS FROM 'file:///athlete_sport.csv' AS row
+MATCH (a:Athlete {id: row.athlete_id})
+MATCH (s:Sport {name: row.sport_name})
+MERGE (a)-[:PLAYS]->(s);
+
+// MEMBER_OF
+LOAD CSV WITH HEADERS FROM 'file:///athlete_team.csv' AS row
+MATCH (a:Athlete {id: row.athlete_id})
+MATCH (t:Team {name: row.team_name})
+MERGE (a)-[:MEMBER_OF]->(t);
+
+// FROM
+LOAD CSV WITH HEADERS FROM 'file:///athlete_country.csv' AS row
+MATCH (a:Athlete {id: row.athlete_id})
+MATCH (c:Country {name: row.country_name})
+MERGE (a)-[:FROM]->(c);
+
+4. Cek hasil data
+// Cek jumlah node
+MATCH (a:Athlete) RETURN count(a);
+MATCH (s:Sport) RETURN count(s);
+MATCH (t:Team) RETURN count(t);
+MATCH (c:Country) RETURN count(c);
+
+// Lihat semua relasi
+MATCH (a:Athlete)-[r]->() RETURN a, r LIMIT 25;
